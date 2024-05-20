@@ -9,7 +9,7 @@
     /** @type {string} */ #start;
     /** @type {string} */ #imagem;
     /** @type {string} */ #tamanho;
-    /** @type {string} */ #maskable;
+    /** @type {boolean} */ #maskable;
     /** @type {string} */ #iconesJaExistentes;
 
     set nome(value) {
@@ -49,10 +49,10 @@
       return this.#tamanho || "144";
     };
     set maskable(value) {
-      this.#maskable = value;
+      this.#maskable = Boolean(value);
     };
     get maskable() {
-      return this.#maskable || "maskable";
+      return Boolean(this.#maskable);
     };
 
     defineIconesJaExistentes() {
@@ -63,14 +63,14 @@
           src: dado.href || undefined,
           type: dado.type || undefined,
           sizes: dado.sizes.value || undefined,
-          purpose: "any"
+          purpose: `any${this.maskable ? " maskable" : ""}`
         });
       });
 
       this.#iconesJaExistentes = JSON.stringify(arrobjeto, 0, 2);
     }
 
-    iconesPreDefinidos() {
+    iconePreDefinido() {
 
       let tipoDeImagem = '';
       let tamanhoDaImagem = `${this.tamanho}x${this.tamanho}`;
@@ -96,8 +96,7 @@
           tipoDeImagem = "image/jpg";
           break;
         default:
-          alert("Imagem não compatível!");
-          location.reload(true);
+          alert("⚠️ Imagem não compatível!");
           break;
       }
 
@@ -106,13 +105,7 @@
           "src": "${this.imagem}",
           "type": "${tipoDeImagem}",
           "sizes": "${tamanhoDaImagem}",
-          "purpose": "any"
-        },
-        {
-          "src": "${this.imagem}",
-          "type": "${tipoDeImagem}",
-          "sizes": "${tamanhoDaImagem}",
-          "purpose": "${this.maskable}"
+          "purpose": "any${this.maskable ? " maskable" : ""}"
         }
       ]`;
     };
@@ -136,10 +129,12 @@
         "display": "standalone",
         "description": "${this.descricao}.",
         "lang": "pt-BR",
-        "icons": ${this.#iconesJaExistentes || this.iconesPreDefinidos()}
+        "icons": ${this.#iconesJaExistentes || this.iconePreDefinido()}
       }`;
     }
   }
+
+  document.querySelector("link[rel*='manifest']")?.remove();
 
   const dadosManifest = new CriarManifest();
 
@@ -152,8 +147,8 @@
   } else {
     dadosManifest.imagem = prompt("Link para uma imagem 1:1:", "https://valeriohasman.github.io/CriarWebAppPWA/icon.png");
     dadosManifest.tamanho = prompt("Tamanho² da imagem:", "144");
-    dadosManifest.maskable = confirm("É uma imagem mascarável?:") ? "maskable" : "any";
   }
+  dadosManifest.maskable = confirm("Habilitar o modo mascarável?");
 
   const linkdadosManifest = document.createElement('link');
   linkdadosManifest.rel = "manifest";
@@ -164,6 +159,6 @@
 
   document.head.appendChild(linkdadosManifest);
 
-  alert("Agora pode ser possível instalar a página!");
+  alert("Agora pode ser possível instalar a página web!");
 
 })();
