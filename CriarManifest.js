@@ -159,6 +159,8 @@
 
   document.head.appendChild(linkdadosManifest);
 
-  alert("Agora pode ser possível instalar a página web!");
+  if(confirm("Agora pode ser possível instalar a página web!\n\nDeseja visitar o perfil do Desenvolvedor?")){
+    void window.open("https://valeriohasman.github.io/portfolio/portifolio.html", "_blank");
+  }
 
 })();
