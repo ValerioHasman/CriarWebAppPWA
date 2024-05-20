@@ -5,7 +5,7 @@
 Crie um favorito com o seguinte comando:
 
 ```javascript
-javascript:(function () { var script = document.createElement('script'); script.src="https://valeriohasman.github.io/"; document.body.append(script); })();
+javascript:(function () { var script = document.createElement('script'); script.src="https://valeriohasman.github.io/CriarWebAppPWA/CriarManifest.js"; document.body.append(script); })();
 ```
 
 Vá para o site que deseja criar um Web App e chame o favorito criado.
