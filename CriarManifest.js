@@ -76,23 +76,23 @@
       let tamanhoDaImagem = `${this.tamanho}x${this.tamanho}`;
 
       switch ((this.imagem.match(/\.([^.]+)$/)[0]).toLowerCase()) {
-        case 'png':
+        case '.png':
           tipoDeImagem = "image/png";
           break;
-        case 'ico':
+        case '.ico':
           tipoDeImagem = "image/x-icon";
           break;
-        case 'svg':
+        case '.svg':
           tipoDeImagem = "image/svg+xml";
           tamanhoDaImagem = "any";
           break;
-        case 'gif':
+        case '.gif':
           tipoDeImagem = "image/gif";
           break;
-        case 'webp':
+        case '.webp':
           tipoDeImagem = "image/webp";
           break;
-        case 'jpg':
+        case '.jpg':
           tipoDeImagem = "image/jpg";
           break;
         default:
