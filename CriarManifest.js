@@ -1,16 +1,71 @@
 (() => {
   "use strict"
 
+  class IconeManifest {
+
+    /**
+     * @param {string} urlDaImagem
+     * @returns {Promise<{src, sizes, type}>}
+     */
+    static async pegarTamanhoETipoDeImagem(urlDaImagem) {
+
+      const objetoRejeitado = { src: urlDaImagem, sizes: undefined, type: undefined };
+
+      try {
+
+        const response = await fetch(urlDaImagem);
+        if (!response.ok) {
+          return new Promise((resolve, reject) => {
+            reject(objetoRejeitado);
+          });
+        }
+
+        const contentType = response.headers.get('Content-Type');
+        const responseBlob = await response.blob();
+        const propriedadesDaImagem = new Image();
+        const objectURL = URL.createObjectURL(responseBlob);
+
+        return new Promise((resolve, reject) => {
+          propriedadesDaImagem.src = objectURL;
+
+          propriedadesDaImagem.onload = () => {
+            const width = propriedadesDaImagem.width;
+            const height = propriedadesDaImagem.height;
+            URL.revokeObjectURL(objectURL);
+            resolve({ src: urlDaImagem, sizes: `${width}x${height}`, type: contentType });
+          };
+
+          propriedadesDaImagem.onerror = () => {
+            URL.revokeObjectURL(objectURL);
+            objetoRejeitado.type = contentType;
+            reject(objetoRejeitado);
+          };
+        });
+      } catch (error) {
+        return new Promise((resolve, reject) => {
+          reject(objetoRejeitado);
+        });
+      }
+    }
+
+  }
+
   class CriarManifest {
 
     /** @type {string} */ #nome;
     /** @type {string} */ #nomeCurto;
     /** @type {string} */ #descricao;
     /** @type {string} */ #start;
-    /** @type {string} */ #imagem;
     /** @type {string} */ #tamanho;
     /** @type {boolean} */ #maskable;
-    /** @type {string} */ #iconesJaExistentes;
+    /** @type {number} */ #numeroImagensPendentes = 0;
+    /** @type {any[]} */ #iconesFornecidos = [];
+
+
+    constructor() {
+      document.querySelector("link[rel*='manifest']")?.remove();
+      this.defineIconesJaExistentes();
+    }
 
     set nome(value) {
       this.#nome = value;
@@ -36,17 +91,11 @@
     get start() {
       return this.#start || "/";
     };
-    set imagem(value) {
-      this.#imagem = value;
-    };
-    get imagem() {
-      return this.#imagem || "https://valeriohasman.github.io/CriarWebAppPWA/icon.png";
-    };
     set tamanho(value) {
       this.#tamanho = value;
     };
     get tamanho() {
-      return this.#tamanho || "144";
+      return this.#tamanho || "512";
     };
     set maskable(value) {
       this.#maskable = Boolean(value);
@@ -55,63 +104,69 @@
       return Boolean(this.#maskable);
     };
 
-    defineIconesJaExistentes() {
-      const arrobjeto = [];
-
-      document.querySelectorAll("link[rel*='icon']").forEach((dado) => {
-        arrobjeto.push({
-          src: dado.href || undefined,
-          type: dado.type || undefined,
-          sizes: dado.sizes.value || undefined,
-          purpose: `any${this.maskable ? " maskable" : ""}`
-        });
-      });
-
-      this.#iconesJaExistentes = JSON.stringify(arrobjeto, 0, 2);
+    icones() {
+      return JSON.stringify(this.#iconesFornecidos, 0, 2);
     }
 
-    iconePreDefinido() {
+    defineIconesJaExistentes() {
+      document.querySelectorAll("link[rel*='icon']").forEach((linkRelIcon) => {
+        this.adicionarIcone(linkRelIcon.href)
+      });
+    }
 
-      let tipoDeImagem = '';
-      let tamanhoDaImagem = `${this.tamanho}x${this.tamanho}`;
-
-      switch ((this.imagem.match(/\.([^.]+)$/)[0]).toLowerCase()) {
-        case '.png':
-          tipoDeImagem = "image/png";
-          break;
-        case '.ico':
-          tipoDeImagem = "image/x-icon";
-          break;
-        case '.svg':
-          tipoDeImagem = "image/svg+xml";
-          tamanhoDaImagem = "any";
-          break;
-        case '.gif':
-          tipoDeImagem = "image/gif";
-          break;
-        case '.webp':
-          tipoDeImagem = "image/webp";
-          break;
-        case '.jpg':
-          tipoDeImagem = "image/jpg";
-          break;
-        default:
-          alert("⚠️ Imagem não compatível!");
-          break;
-      }
-
-      return `[
-        {
-          "src": "${this.imagem}",
-          "type": "${tipoDeImagem}",
-          "sizes": "${tamanhoDaImagem}",
-          "purpose": "any${this.maskable ? " maskable" : ""}"
+    /** @param {string} urlDaImagem  */
+    adicionarIcone(urlDaImagem) {
+      void this.#numeroImagensPendentes++;
+      (async () => {
+        let objetoDeIcone = undefined;
+        try {
+          void new URL(urlDaImagem);
+          void await IconeManifest.pegarTamanhoETipoDeImagem(urlDaImagem)
+            .then((res) => {
+              objetoDeIcone = res;
+            })
+            .catch((err) => {
+              objetoDeIcone = err;
+            });
+        } catch (err) {
+          console.log("Invalid URL!");
         }
-      ]`;
-    };
+        if (objetoDeIcone) {
+          objetoDeIcone.purpose = `any${this.maskable ? " maskable" : ""}`;
+          this.#iconesFornecidos.push(objetoDeIcone);
+        }
+        void this.#numeroImagensPendentes--;
+      })();
+    }
 
     static encurtarNome(nome = '') {
       return nome.substring(0, 12);
+    }
+
+    async instalar() {
+      void await new Promise((resolve) => {
+        const intervalo = setInterval(() => {
+          console.log(this.#iconesFornecidos);
+          console.log(this.#numeroImagensPendentes);
+          if (this.#numeroImagensPendentes == 0) {
+            this.icones();
+            clearInterval(intervalo);
+            resolve();
+          }
+        }, 100);
+      });
+      const linkdadosManifest = document.createElement('link');
+      linkdadosManifest.rel = "manifest";
+
+      const blobdadosManifest = new Blob([this.toString()], { type: 'application/json' });
+      const urldadosManifest = window.URL.createObjectURL(blobdadosManifest);
+      linkdadosManifest.href = urldadosManifest;
+
+      document.head.appendChild(linkdadosManifest);
+
+      if (confirm("🌎 Agora pode ser possível instalar a página web!\n\nDeseja visitar o perfil do Desenvolvedor?")) {
+        void window.open("https://valeriohasman.github.io/portfolio/portifolio.html", "_blank");
+      }
     }
 
     toString() {
@@ -129,38 +184,25 @@
         "display": "standalone",
         "description": "${this.descricao}.",
         "lang": "pt-BR",
-        "icons": ${this.#iconesJaExistentes || this.iconePreDefinido()}
+        "icons": ${this.icones()}
       }`;
     }
   }
 
-  document.querySelector("link[rel*='manifest']")?.remove();
-
   const dadosManifest = new CriarManifest();
 
-  dadosManifest.nome = prompt("Nome para a página:", document.title);
-  dadosManifest.descricao = prompt("Descricão (opcional):");
-  dadosManifest.start = prompt("Início da página:", "/");
+  dadosManifest.nome = prompt("🏷️ Nome do Web App:", document.title);
+  dadosManifest.start = prompt("🔰 Iniciar página em:", "/");
+  dadosManifest.maskable = confirm("🖼️ Habilitar o modo mascarável para os ícones?");
 
-  if (confirm("Localizar imagem automaticamente?")) {
-    dadosManifest.defineIconesJaExistentes();
-  } else {
-    dadosManifest.imagem = prompt("Link para uma imagem 1:1:", "https://valeriohasman.github.io/CriarWebAppPWA/icon.png");
-    dadosManifest.tamanho = prompt("Tamanho² da imagem:", "144");
+  while (confirm("⚙️ Quer fornecer mais uma imagem para garantir o funcionamento?")) {
+    dadosManifest.adicionarIcone(
+      prompt("✨ Link de uma imagem 1:1:", "https://valeriohasman.github.io/CriarWebAppPWA/icon.png")
+    );
   }
-  dadosManifest.maskable = confirm("Habilitar o modo mascarável?");
 
-  const linkdadosManifest = document.createElement('link');
-  linkdadosManifest.rel = "manifest";
-
-  const blobdadosManifest = new Blob([dadosManifest.toString()], { type: 'application/json' });
-  const urldadosManifest = window.URL.createObjectURL(blobdadosManifest);
-  linkdadosManifest.href = urldadosManifest;
-
-  document.head.appendChild(linkdadosManifest);
-
-  if(confirm("Agora pode ser possível instalar a página web!\n\nDeseja visitar o perfil do Desenvolvedor?")){
-    void window.open("https://valeriohasman.github.io/portfolio/portifolio.html", "_blank");
-  }
+  setTimeout(() => {
+    dadosManifest.instalar();
+  }, 3000)
 
 })();
