@@ -201,8 +201,6 @@
     );
   }
 
-  setTimeout(() => {
-    dadosManifest.instalar();
-  }, 3000)
+  dadosManifest.instalar();
 
 })();
