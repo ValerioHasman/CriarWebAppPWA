@@ -103,6 +103,9 @@
     get maskable() {
       return Boolean(this.#maskable);
     };
+    get numeroImagensPendentes() {
+      return this.#numeroImagensPendentes;
+    };
 
     icones() {
       return JSON.stringify(this.#iconesFornecidos, 0, 2);
@@ -143,30 +146,25 @@
       return nome.substring(0, 12);
     }
 
-    async instalar() {
-      void await new Promise((resolve) => {
+    async #esperaPendentes(){
+      return new Promise((resolve) => {
         const intervalo = setInterval(() => {
-          console.log(this.#iconesFornecidos);
-          console.log(this.#numeroImagensPendentes);
           if (this.#numeroImagensPendentes == 0) {
-            this.icones();
             clearInterval(intervalo);
             resolve();
           }
         }, 100);
       });
+    }
+    
+    async instalar() {
+      void await this.esperaPendentes();
       const linkdadosManifest = document.createElement('link');
       linkdadosManifest.rel = "manifest";
-
       const blobdadosManifest = new Blob([this.toString()], { type: 'application/json' });
       const urldadosManifest = window.URL.createObjectURL(blobdadosManifest);
       linkdadosManifest.href = urldadosManifest;
-
       document.head.appendChild(linkdadosManifest);
-
-      if (confirm("🌎 Agora pode ser possível instalar a página web!\n\nDeseja visitar o perfil do Desenvolvedor?")) {
-        void window.open("https://valeriohasman.github.io/portfolio/portifolio.html", "_blank");
-      }
     }
 
     toString() {
@@ -195,12 +193,17 @@
   dadosManifest.start = prompt("🔰 Iniciar página em:", "/");
   dadosManifest.maskable = confirm("🖼️ Habilitar o modo mascarável para os ícones?");
 
-  while (confirm("⚙️ Quer fornecer mais uma imagem para garantir o funcionamento?")) {
+  while (confirm(`⚙️ Quer fornecer mais uma imagem para garantir o funcionamento?\n${dadosManifest.numeroImagensPendentes} ícones encontrados.`)) {
     dadosManifest.adicionarIcone(
       prompt("✨ Link de uma imagem 1:1:", "https://valeriohasman.github.io/CriarWebAppPWA/icon.png")
     );
   }
 
-  dadosManifest.instalar();
+  dadosManifest.instalar()
+    .then(()=>{
+      if (confirm("🌎 Agora pode ser possível instalar a página web!\n\nDeseja visitar o perfil do Desenvolvedor?")) {
+        void window.open("https://valeriohasman.github.io/portfolio/portifolio.html", "_blank");
+      }
+    });
 
 })();
