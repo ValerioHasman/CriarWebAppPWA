@@ -158,7 +158,7 @@
     }
     
     async instalar() {
-      void await this.esperaPendentes();
+      void await this.#esperaPendentes();
       const linkdadosManifest = document.createElement('link');
       linkdadosManifest.rel = "manifest";
       const blobdadosManifest = new Blob([this.toString()], { type: 'application/json' });
