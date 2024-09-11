@@ -32,14 +32,13 @@ export default class Manifest {
     return manifesto;
   }
 
+  /** @param {string} manifest */
   static instalar(manifest) {
     const linkdadosManifest = document.createElement('link');
     const blobdadosManifest = new Blob([manifest], { type: 'application/json' });
     linkdadosManifest.rel = "manifest";
     linkdadosManifest.href = window.URL.createObjectURL(blobdadosManifest);
     document.head.appendChild(linkdadosManifest);
-
-    console.log(linkdadosManifest)
   }
 
 }

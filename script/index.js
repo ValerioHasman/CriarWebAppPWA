@@ -1,34 +1,37 @@
 import Icones from "./Icones.js";
 import Manifest from "./Manifest.js";
+import Arquivos from "./Arquivos.js";
 
 /** @typedef {{ tagIMG: HTMLImageElement; src: string; sizes: string; type: string; }} DadosImagem */
 
-
 const form = document.querySelector("form");
 const tabela = document.querySelector("tbody");
+/** @type {HTMLSpanElement} */
+const linkDeOrigem = document.getElementById("linkDeOrigem");
 
-const dadosManifesto = window?.dadosManifesto ?? {};
-const iconesExistentes = window?.dadosManifesto?.iconesExistentes ?? [];
+/** @type {{ source: Window; origin: string; }} */
+const origem = { source: null, origin: null };
 
-document.querySelector("input[name=nomeDaPagina]").value = dadosManifesto.titulo;
-
-iconesExistentes.forEach(async (link) => {
-  criarLinha(await Icones.pegarTamanhoETipoURL(link.href));
+window.addEventListener("message", (event) => {
+  origem.source = event.source;
+  origem.origin = event.origin;
+  linkDeOrigem.textContent = event.origin;
+  document.querySelector("input[name=nomeDaPagina]").value = event.data.title;
+  carregarIconesExistentes(event.data.icones);
 });
 
-/** @type {HTMLInputElement} */
-let novoArquivo = document.querySelector("#novoarquivo");
 
-novoArquivo.onchange = async (event) => {
-
-  novoArquivo.disabled = true;
-
-  criarLinha(await Icones.pegarTamanhoETipoArquivo(novoArquivo.files[0]));
-
-  novoArquivo.disabled = false;
-  novoArquivo.value = "";
+/** @param {string[]} link */
+function carregarIconesExistentes(link) {
+  link.forEach(async (link) => {
+    criarLinha(await Icones.pegarTamanhoETipoURL(link));
+  });
 }
 
+const novoArquivo = new Arquivos(document.querySelector("#novoarquivo"), criarLinha);
+
+const botao = document.querySelector("button[type=submit]");
+botao.addEventListener("click", () => { novoArquivo.seExistem() });
 
 /** @param {DadosImagem} dadosImagem */
 function criarLinha(dadosImagem) {
@@ -73,12 +76,15 @@ form.onsubmit = (event) => {
   manifest.name = document.querySelector("input[name=nomeDaPagina]").value;
   manifest.display = document.querySelector("select[name=display]").value;
   manifest.start_url = document.querySelector("input[name=caminho]").value;
+  manifest.start_url = origem.origin + manifest.start_url;
   manifest.icons = icones();
 
-  dadosManifesto.manifest = manifest;
+  botao.disabled = true;
+  setTimeout(() => {
+    botao.disabled = false;
+  }, 5000);
 
-  window.close();
-
+  origem.source.postMessage({ manifest: manifest.gerar() }, origem.origin);
 }
 
 function icones() {
@@ -94,3 +100,4 @@ function icones() {
   }
   return arr;
 }
+

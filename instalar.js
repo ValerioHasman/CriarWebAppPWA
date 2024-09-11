@@ -1,51 +1,45 @@
-import Manifest from "./script/Manifest.js";
 import Icones from "./script/Icones.js";
+import iframePara from "./script/iframePara.js";
+import Manifest from "./script/Manifest.js";
+import Notificacao from "./script/Notificacao.js";
+import prepararPagina from "./script/prepararPagina.js";
 
-const janela = window.open("https://valeriohasman.github.io/CriarWebAppPWA/", "_blank");
+const dados = {
+  title: document.title,
+  icones: Icones.localizar(),
+};
+
+prepararPagina();
+
+const iframe = iframePara("https://valeriohasman.github.io/CriarWebAppPWA/");
+
+document.body.append(iframe);
+
+iframe.addEventListener("load", enviarDadosParaIFrame);
+
+window.addEventListener("message", (event) => {
+  instalar(event.data.manifest);
+})
+
+/** @param {string} manifest  */
+function instalar(manifest) {
+  document.querySelector("link[rel=manifest]")?.remove();
+  Manifest.instalar(manifest);
+}
+
+function enviarDadosParaIFrame() {
+  iframe.contentWindow.postMessage(dados, '*');
+}
 
 window.addEventListener("beforeinstallprompt", (event) => {
   event.preventDefault();
-  var b = document.createElement("button");
-  b.addEventListener("click", () => {
-    event.prompt();
-  })
-  document.body.append(b);
-  b.style.position = "fixed";
-  b.style.bottom = "0";
-  b.style.right = "0";
-  b.style.zIndex = "2000";
-  b.style.fontSize = "3em";
-  b.style.margin = "1em";
-  b.style.borderRadius = "1rem";
-  b.style.padding = "0 1rem";
-  b.style.fontWeight = "bold";
-  b.style.boxShadow = "0 1rem 3rem rgba(0, 0, 0, 0.175)";
-  b.innerHTML = "Instalar PWA!";
-  b.focus();
+  const close = Notificacao("Pronto para instalar o site!", () => { event.prompt(); }, `Instalar<i class="bi ms-2 bi-download"></i>`);
+
   event.userChoice
     .then(choice => {
       if (choice.outcome === 'accepted') {
+        void Notificacao("Voltar para a o site?", () => { window.location.reload(); }, `Voltar<i class="bi ms-2 bi-arrow-return-left"></i>`, "success");
       }
-      b.remove();
+      close();
     })
 });
-
-
-/** @param {Manifest} manifest */
-function manifestados(manifest) {
-  manifest.start_url = location.origin + manifest.start_url;
-  Manifest.instalar(manifest.gerar());
-}
-
-janela.dadosManifesto = {
-  titulo: document.title,
-  iconesExistentes: Icones.localizar()
-}
-
-let loopDaJanela = setInterval(function () {
-  if (janela.closed) {
-    manifestados(janela.dadosManifesto.manifest);
-    clearInterval(loopDaJanela);
-  }
-}, 1000);
-

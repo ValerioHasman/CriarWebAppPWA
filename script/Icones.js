@@ -2,9 +2,13 @@
 
 export default class Icones {
 
-  /** @returns {NodeListOf<HTMLLinkElement>} */
+  /** @returns {string[]} */
   static localizar() {
-    return document.querySelectorAll("link[rel*='icon']");
+    const listaDeLink = [];
+    document.querySelectorAll("link[rel*='icon']").forEach((elemento) => {
+      listaDeLink.push(elemento.href);
+    });
+    return listaDeLink;
   }
 
   /**
@@ -34,11 +38,14 @@ export default class Icones {
     const objectURL = URL.createObjectURL(responseBlob);
     const base64 = await Icones.convertImageToBase64(urlDaImagem);
 
-    const valores = await new Promise((resolve) => {
+    const valores = await new Promise((resolve, reject) => {
       tagIMG.src = objectURL;
       tagIMG.onload = () => {
         const width = tagIMG.width;
         const height = tagIMG.height;
+        if (width != height) {
+          reject("A imagem deve ser quadrada 1:1");
+        }
         resolve({ src: base64, sizes: `${width}x${height}`, type: contentType });
       };
 
@@ -47,7 +54,6 @@ export default class Icones {
       };
     });
     return { tagIMG, src: valores.src, sizes: valores.sizes, type: valores.type };
-
   }
 
   static async convertImageToBase64(imageUrl) {
