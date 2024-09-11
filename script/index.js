@@ -1,8 +1,7 @@
-import Icones from "./Icones.js";
 import Manifest from "./Manifest.js";
 import Arquivos from "./Arquivos.js";
 
-/** @typedef {{ tagIMG: HTMLImageElement; src: string; sizes: string; type: string; }} DadosImagem */
+/** @typedef {import("./Icones.js").DadosImagem} DadosImagem */
 
 const form = document.querySelector("form");
 const tabela = document.querySelector("tbody");
@@ -21,10 +20,10 @@ window.addEventListener("message", (event) => {
 });
 
 
-/** @param {string[]} link */
-function carregarIconesExistentes(link) {
-  link.forEach(async (link) => {
-    criarLinha(await Icones.pegarTamanhoETipoURL(link));
+/** @param {DadosImagem[]} dadosImagem */
+function carregarIconesExistentes(dadosImagem) {
+  dadosImagem.forEach((dadoImagem) => {
+    criarLinha(dadoImagem);
   });
 }
 
@@ -36,7 +35,7 @@ botao.addEventListener("click", () => { novoArquivo.seExistem() });
 /** @param {DadosImagem} dadosImagem */
 function criarLinha(dadosImagem) {
   const tr = criarElemento("tr");
-  tr.insertAdjacentElement("beforeend", criarElemento("td", criarElemento("div", dadosImagem.tagIMG, "imagemBox")));
+  tr.insertAdjacentElement("beforeend", criarElemento("td", criarElemento("div", `<img src="${dadosImagem.src}" />`, "imagemBox")));
   tr.insertAdjacentElement("beforeend", criarElemento("td", dadosImagem.type));
   tr.insertAdjacentElement("beforeend", criarElemento("td", dadosImagem.sizes));
   tr.insertAdjacentElement("beforeend", criarElemento("td", `<label class="form-check-label w-100"><input mascaravel class="form-check-input" type="checkbox" /></label>`));

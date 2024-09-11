@@ -34,6 +34,7 @@ export default class Manifest {
 
   /** @param {string} manifest */
   static instalar(manifest) {
+    document.querySelector("link[rel=manifest]")?.remove();
     const linkdadosManifest = document.createElement('link');
     const blobdadosManifest = new Blob([manifest], { type: 'application/json' });
     linkdadosManifest.rel = "manifest";

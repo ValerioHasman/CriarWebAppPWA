@@ -1,13 +1,16 @@
-/** @typedef {{ tagIMG: HTMLImageElement; src: string; sizes: string; type: string; }} DadosImagem */
+/** @typedef {{ src: string; sizes: string; type: string; }} DadosImagem */
 
 export default class Icones {
 
-  /** @returns {string[]} */
-  static localizar() {
+  /** @returns {DadosImagem[]} */
+  static async localizar() {
     const listaDeLink = [];
-    document.querySelectorAll("link[rel*='icon']").forEach((elemento) => {
-      listaDeLink.push(elemento.href);
+    document.querySelectorAll("link[rel*='icon']").forEach(async (elemento) => {
+      listaDeLink.push(
+        await Icones.pegarTamanhoETipoURL(elemento.href)
+      );
     });
+    console.log(listaDeLink);
     return listaDeLink;
   }
 
@@ -53,7 +56,7 @@ export default class Icones {
         throw new Error("Não foi possível carregar a imagem");
       };
     });
-    return { tagIMG, src: valores.src, sizes: valores.sizes, type: valores.type };
+    return { src: valores.src, sizes: valores.sizes, type: valores.type };
   }
 
   static async convertImageToBase64(imageUrl) {

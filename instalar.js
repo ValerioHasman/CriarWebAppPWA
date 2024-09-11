@@ -6,28 +6,23 @@ import prepararPagina from "./script/prepararPagina.js";
 
 const dados = {
   title: document.title,
-  icones: Icones.localizar(),
+  icones: await Icones.localizar()
 };
 
 prepararPagina();
 
-const iframe = iframePara("https://valeriohasman.github.io/CriarWebAppPWA/");
+const iframe = iframePara("http://localhost/CriarWebAppPWA/");
 
 document.body.append(iframe);
 
 iframe.addEventListener("load", enviarDadosParaIFrame);
 
 window.addEventListener("message", (event) => {
-  instalar(event.data.manifest);
+  Manifest.instalar(event.data.manifest);
 })
 
-/** @param {string} manifest  */
-function instalar(manifest) {
-  document.querySelector("link[rel=manifest]")?.remove();
-  Manifest.instalar(manifest);
-}
-
 function enviarDadosParaIFrame() {
+  console.log(dados);
   iframe.contentWindow.postMessage(dados, '*');
 }
 
