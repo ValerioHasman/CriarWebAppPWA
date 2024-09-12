@@ -17,12 +17,9 @@ document.body.append(iframe);
 
 iframe.addEventListener("load", enviarDadosParaIFrame);
 
-const erro = Notificacao("Não foi possível instalar. Tente colocar um ícone png 1:1 ou trocar o modo de exibição.", () => { erro.hide(); }, `<i class="bi bi-x-lg"></i>`, "danger");
-erro.hide();
-
 window.addEventListener("message", (event) => {
+  void Notificacao("Não foi possível instalar. Tente colocar um ícone png 1:1 ou trocar o modo de exibição.", () => { erro.hide(); }, `<i class="bi bi-x-lg"></i>`, "danger");
   Manifest.instalar(event.data.manifest);
-  erro.show();
 })
 
 function enviarDadosParaIFrame() {
@@ -30,15 +27,13 @@ function enviarDadosParaIFrame() {
 }
 
 window.addEventListener("beforeinstallprompt", (event) => {
-  erro.hide();
   event.preventDefault();
-  const sucesso = Notificacao("Pronto para instalar o site!", () => { event.prompt(); }, `Instalar<i class="bi ms-2 bi-download"></i>`);
+  void Notificacao("Pronto para instalar o site!", () => { event.prompt(); }, `Instalar<i class="bi ms-2 bi-download"></i>`);
 
   event.userChoice
     .then(choice => {
       if (choice.outcome === 'accepted') {
         void Notificacao("Tudo pronto, voltar para a o site?", () => { window.location.reload(); }, `Voltar<i class="bi ms-2 bi-arrow-return-left"></i>`, "success");
       }
-      sucesso.hide();
     })
 });

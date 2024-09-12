@@ -20,7 +20,9 @@ export default function Notificacao(titulo, acao, mensagemBotao, cor = "primary"
 
   const botao = caixaMSG.querySelector("button[acao]");
   botao.addEventListener("click", acao);
-  
+
+  fechaTodos();
+
   const toastBootstrap = bootstrap.Toast.getOrCreateInstance(caixaMSG);
   caixaMSG.addEventListener("shown.bs.toast", () => { botao.focus(); });
   toastBootstrap.show();
@@ -35,4 +37,11 @@ function ToastContainer() {
     document.body.appendChild(tc);
     return tc;
   })();
+}
+
+function fechaTodos() {
+  const toasts = document.getElementsByClassName("toast");
+  for (let item of toasts) {
+    bootstrap.Toast.getOrCreateInstance(item)?.hide();
+  }
 }
