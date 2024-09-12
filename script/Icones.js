@@ -7,8 +7,12 @@ export default class Icones {
     const listaDeLink = [];
     try {
       listaDeLink.push(
-        await Icones.pegarTamanhoETipoURL(location.origin + "/favicon.png")
+        await Icones.pegarTamanhoETipoURL(location.origin + "/favicon.ico")
       );
+    } catch (erro) {
+      console.info(erro.message);
+    }
+    try {
       listaDeLink.push(
         await Icones.pegarTamanhoETipoURL(location.origin + "/favicon.png")
       );

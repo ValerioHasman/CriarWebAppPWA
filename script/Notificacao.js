@@ -25,9 +25,7 @@ export default function Notificacao(titulo, acao, mensagemBotao, cor = "primary"
   caixaMSG.addEventListener("shown.bs.toast", () => { botao.focus(); });
   toastBootstrap.show();
 
-  return function () {
-    toastBootstrap.dispose();
-  };
+  return toastBootstrap;
 }
 
 function ToastContainer() {
