@@ -5,12 +5,26 @@ export default class Icones {
   /** @returns {DadosImagem[]} */
   static async localizar() {
     const listaDeLink = [];
-    document.querySelectorAll("link[rel*='icon']").forEach(async (elemento) => {
+    try {
       listaDeLink.push(
-        await Icones.pegarTamanhoETipoURL(elemento.href)
+        await Icones.pegarTamanhoETipoURL(location.origin + "/favicon.png")
       );
+      listaDeLink.push(
+        await Icones.pegarTamanhoETipoURL(location.origin + "/favicon.png")
+      );
+    } catch (erro) {
+      console.info(erro.message);
+    }
+    document.querySelectorAll("link[rel*='icon']").forEach(async (elemento) => {
+      try {
+        listaDeLink.push(
+          await Icones.pegarTamanhoETipoURL(elemento.href)
+        );
+      } catch (erro) {
+        console.info(erro.message);
+      }
+
     });
-    console.log(listaDeLink);
     return listaDeLink;
   }
 
@@ -32,7 +46,7 @@ export default class Icones {
 
     const response = await fetch(urlDaImagem);
     if (!response.ok) {
-      alert("Não foi possível colocar " + urlDaImagem);
+      throw new Error("Não foi possível colocar " + urlDaImagem);
     }
 
     const contentType = response.headers.get('Content-Type');

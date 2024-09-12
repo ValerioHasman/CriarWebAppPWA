@@ -22,7 +22,6 @@ window.addEventListener("message", (event) => {
 })
 
 function enviarDadosParaIFrame() {
-  console.log(dados);
   iframe.contentWindow.postMessage(dados, '*');
 }
 
