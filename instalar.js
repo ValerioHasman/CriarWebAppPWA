@@ -18,7 +18,7 @@ document.body.append(iframe);
 iframe.addEventListener("load", enviarDadosParaIFrame);
 
 window.addEventListener("message", (event) => {
-  void Notificacao("Não foi possível instalar. Tente colocar um ícone png 1:1 ou trocar o modo de exibição.", () => { erro.hide(); }, `<i class="bi bi-x-lg"></i>`, "danger");
+  const erro = Notificacao("Não foi possível instalar. Tente colocar um ícone png 1:1 ou trocar o modo de exibição.", () => { erro.hide(); }, `<i class="bi bi-x-lg"></i>`, "danger");
   Manifest.instalar(event.data.manifest);
 })
 
