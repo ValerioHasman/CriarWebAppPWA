@@ -71,7 +71,7 @@ export default class Icones {
       };
 
       tagIMG.onerror = (erroCarregar) => {
-        console.info("Não foi possível carregar a imagem", erroCarregar, objectURL);
+        reject("Não foi possível carregar a imagem: " + objectURL);
       };
     });
     return { src: valores.src, sizes: valores.sizes, type: valores.type };
