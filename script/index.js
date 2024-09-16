@@ -38,7 +38,7 @@ function criarLinha(dadosImagem) {
   tr.insertAdjacentElement("beforeend", criarElemento("td", criarElemento("div", `<img src="${dadosImagem.src}" />`, "imagemBox")));
   tr.insertAdjacentElement("beforeend", criarElemento("td", dadosImagem.type));
   tr.insertAdjacentElement("beforeend", criarElemento("td", dadosImagem.sizes));
-  tr.insertAdjacentElement("beforeend", criarElemento("td", `<label class="form-check-label w-100"><input mascaravel class="form-check-input" type="checkbox" /></label>`));
+  tr.insertAdjacentElement("beforeend", criarElemento("td", `<label class="form-check-label w-100"><input mascaravel class="form-check-input" type="checkbox" /><i class="bi ms-2 bi-image-fill"></i></label>`));
   tr.insertAdjacentElement("beforeend", criarElemento("td", `
     <input type="text" hidden imgtype />
     <input type="text" hidden imgsrc />
