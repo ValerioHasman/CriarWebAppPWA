@@ -70,8 +70,8 @@ export default class Icones {
         resolve({ src: base64, sizes: `${width}x${height}`, type: contentType });
       };
 
-      tagIMG.onerror = () => {
-        throw new Error("Não foi possível carregar a imagem");
+      tagIMG.onerror = (erroCarregar) => {
+        console.info("Não foi possível carregar a imagem", erroCarregar, objectURL);
       };
     });
     return { src: valores.src, sizes: valores.sizes, type: valores.type };
