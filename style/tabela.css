@@ -1,0 +1,39 @@
+.imagemBox {
+  width: 3em;
+  height: 3em;
+  background-color: #efefef;
+}
+.imagemBox img {
+  width: 100%;
+  height: 100%;
+}
+
+tbody {
+  line-height: 0 !important;
+}
+
+.ifMascable {
+  margin-left: 1em;
+  height: 1.5rem;
+  transition: all .2s ease-out;
+  opacity: 1;
+}
+
+.mascarar:has(input:active) .ifMascable{
+  transition: none;
+  scale: 0.8;
+  transform: translateY(20px);
+  opacity: 0;
+}
+tr:has(button.btn-danger:active) {
+  --bs-table-active-bg: #dfc2c4;
+  --bs-table-active-color: #000;
+  --bs-table-color-state: var(--bs-table-active-color);
+  --bs-table-bg-state: var(--bs-table-active-bg);
+}
+.mascarar:has(input:not(:checked)) .ifMascable {
+  content: url(../img/1.svg);
+}
+.mascarar:has(input:checked) .ifMascable {
+  content: url(../img/2.svg);
+}
