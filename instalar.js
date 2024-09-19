@@ -1,17 +1,17 @@
-import Icones from "./script/Icones.js";
+import Dados from "./script/Dados.js";
 import iframePara from "./script/iframePara.js";
 import Manifest from "./script/Manifest.js";
 import Notificacao from "./script/Notificacao.js";
 import prepararPagina from "./script/prepararPagina.js";
 
-const dados = {
-  title: document.title,
-  icones: await Icones.localizar()
-};
+const dados = new Dados();
+
+await dados.load();
 
 prepararPagina();
 
-const iframe = iframePara("https://valeriohasman.github.io/CriarWebAppPWA/");
+const iframe = iframePara("http://localhost/CriarWebAppPWA/");
+//const iframe = iframePara("https://valeriohasman.github.io/CriarWebAppPWA/");
 
 document.body.append(iframe);
 
@@ -23,7 +23,7 @@ window.addEventListener("message", (event) => {
 })
 
 function enviarDadosParaIFrame() {
-  iframe.contentWindow.postMessage(dados, '*');
+  iframe.contentWindow.postMessage({ title: dados.title, icones: dados.icones, list: dados.list }, '*');
 }
 
 window.addEventListener("beforeinstallprompt", (event) => {

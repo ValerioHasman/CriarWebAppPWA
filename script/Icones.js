@@ -1,34 +1,31 @@
 /** @typedef {{ src: string; sizes: string; type: string; }} DadosImagem */
 
+import ArrayNaoRepete from "./ArrayNaoRepete.js";
+
 export default class Icones {
 
-  /** @returns {DadosImagem[]} */
+  /** @returns {Promise<DadosImagem[]>} */
   static async localizar() {
     const listaDeLink = [];
-    try {
-      listaDeLink.push(
-        await Icones.pegarTamanhoETipoURL(location.origin + "/favicon.ico")
-      );
-    } catch (erro) {
-      console.info(erro.message);
-    }
-    try {
-      listaDeLink.push(
-        await Icones.pegarTamanhoETipoURL(location.origin + "/favicon.png")
-      );
-    } catch (erro) {
-      console.info(erro.message);
-    }
-    document.querySelectorAll("link[rel*='icon']").forEach(async (elemento) => {
+    const buscar = new ArrayNaoRepete();
+    buscar.mais(location.origin + "/favicon.ico");
+    buscar.mais(location.origin + "/favicon.png");
+    buscar.mais(location.origin + (location.pathname + "/favicon.ico").replace("//","/"));
+    buscar.mais(location.origin + (location.pathname + "/favicon.png").replace("//","/"));
+
+    document.querySelectorAll("link[rel*='icon']").forEach((elemento) => {
+      buscar.mais(elemento.href);
+    });
+
+    for (let urlDaImagem of buscar) {
       try {
         listaDeLink.push(
-          await Icones.pegarTamanhoETipoURL(elemento.href)
+          await Icones.pegarTamanhoETipoURL(urlDaImagem)
         );
       } catch (erro) {
         console.info(erro.message);
       }
-
-    });
+    }
     return listaDeLink;
   }
 
@@ -38,7 +35,6 @@ export default class Icones {
    */
   static async pegarTamanhoETipoArquivo(arquivo) {
     const blob = new Blob([arquivo], { type: arquivo.type });
-
     return await Icones.pegarTamanhoETipoURL(URL.createObjectURL(blob));
   }
 
@@ -50,7 +46,7 @@ export default class Icones {
 
     const response = await fetch(urlDaImagem);
     if (!response.ok) {
-      throw new Error("Não foi possível colocar " + urlDaImagem);
+      throw new Error("Não foi possível localizar: " + urlDaImagem);
     }
 
     const contentType = response.headers.get('Content-Type');

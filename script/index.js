@@ -5,8 +5,8 @@ import Arquivos from "./Arquivos.js";
 
 const form = document.querySelector("form");
 const tabela = document.querySelector("tbody");
-/** @type {HTMLSpanElement} */
-const linkDeOrigem = document.getElementById("linkDeOrigem");
+/** @type {HTMLSpanElement} */ const linkDeOrigem = document.getElementById("linkDeOrigem");
+/** @type {HTMLDataListElement} */ const pathsearch = document.querySelector("datalist#pathsearch");
 
 /** @type {{ source: Window; origin: string; }} */
 const origem = { source: null, origin: null };
@@ -15,6 +15,11 @@ window.addEventListener("message", (event) => {
   origem.source = event.source;
   origem.origin = event.origin;
   linkDeOrigem.textContent = event.origin;
+  for (let sugestao of event.data.list) {
+    const option = document.createElement("option");
+    option.value = sugestao;
+    pathsearch.appendChild(option);
+  }
   document.querySelector("input[name=nomeDaPagina]").value = event.data.title;
   carregarIconesExistentes(event.data.icones);
 });
