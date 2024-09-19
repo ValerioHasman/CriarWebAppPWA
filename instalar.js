@@ -10,8 +10,7 @@ await dados.load();
 
 prepararPagina();
 
-const iframe = iframePara("http://localhost/CriarWebAppPWA/");
-//const iframe = iframePara("https://valeriohasman.github.io/CriarWebAppPWA/");
+const iframe = iframePara("https://valeriohasman.github.io/CriarWebAppPWA/");
 
 document.body.append(iframe);
 
