@@ -1,3 +1,4 @@
+import Carregando from "./script/Carregando.js";
 import Dados from "./script/Dados.js";
 import iframePara from "./script/iframePara.js";
 import Manifest from "./script/Manifest.js";
@@ -6,7 +7,9 @@ import prepararPagina from "./script/prepararPagina.js";
 
 const dados = new Dados();
 
-await dados.load();
+document.body.innerHTML = Carregando;
+
+await dados.load(); 
 
 prepararPagina();
 

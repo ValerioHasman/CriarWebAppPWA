@@ -7,7 +7,7 @@
 Execute o script abaixo na barra de endereços do navegador ou crie um favorito com o seguinte comando:
 
 ```javascript
-javascript:(function () { var script = document.createElement('script'); script.type = "module"; script.src="https://valeriohasman.github.io/CriarWebAppPWA/instalar.js"; document.body.append(script); })();
+javascript:( function () { import("https://valeriohasman.github.io/CriarWebAppPWA/instalar.js") })();
 ```
 
 ### Antigo
