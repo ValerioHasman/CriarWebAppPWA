@@ -1,18 +1,22 @@
+import Dialog from "./componentes/Dialog.js";
+import Texto from "./componentes/Texto.js";
+import Titulo from "./componentes/Titulo.js";
+import NReact from "./NReact.js";
 import Carregando from "./script/Carregando.js";
 import Dados from "./script/Dados.js";
 import iframePara from "./script/iframePara.js";
 import Manifest from "./script/Manifest.js";
-import Notificacao from "./script/Notificacao.js";
 import prepararPagina from "./script/prepararPagina.js";
 
 const dados = new Dados();
 
 document.body.innerHTML = Carregando;
 
-await dados.load(); 
+await dados.load();
 
 prepararPagina();
 
+// const iframe = iframePara("http://localhost/CriarWebAppPWA/");
 const iframe = iframePara("https://valeriohasman.github.io/CriarWebAppPWA/");
 
 document.body.append(iframe);
@@ -20,7 +24,13 @@ document.body.append(iframe);
 iframe.addEventListener("load", enviarDadosParaIFrame);
 
 window.addEventListener("message", (event) => {
-  const erro = Notificacao("Não foi possível instalar. Tente colocar um ícone png 1:1 ou trocar o modo de exibição.", () => { erro.hide(); }, `<i class="bi bi-x-lg"></i>`, "danger");
+  const erro = Dialog(
+    {},
+    Titulo({}, "Pode ter ocorrido um erro."),
+    Texto({}, "Talvez não tenha sido possível instalar. Tente colocar um ícone PNG 1:1, ou trocar o modo de exibição, ou instalar manualmente."),
+    NReact("button", { onclick: function () { this.parentElement.close() } }, ["Cancelar"]),
+  )
+  erro.showModal();
   Manifest.instalar(event.data.manifest);
 })
 
@@ -30,12 +40,22 @@ function enviarDadosParaIFrame() {
 
 window.addEventListener("beforeinstallprompt", (event) => {
   event.preventDefault();
-  void Notificacao("Pronto para instalar o site!", () => { event.prompt(); }, `Instalar<i class="bi ms-2 bi-download"></i>`);
+  Dialog(
+    {},
+    Titulo({}, "Pronto para instalar o site!"),
+    Texto({}, "Instale e aproveite."),
+    NReact("button", { onclick: () => { event.prompt(); } }, ["Instalar"]),
+  ).showModal();
 
   event.userChoice
     .then(choice => {
       if (choice.outcome === 'accepted') {
-        void Notificacao("Tudo pronto, voltar para a o site?", () => { window.location.reload(); }, `Voltar<i class="bi ms-2 bi-arrow-return-left"></i>`, "success");
+        Dialog(
+          {},
+          Titulo({}, "Tudo pronto"),
+          Texto({}, "Voltar para a o site?"),
+          NReact("button", { onclick: () => { window.location.reload(); } }, ["Voltar"]),
+        ).showModal();
       }
     })
 });
