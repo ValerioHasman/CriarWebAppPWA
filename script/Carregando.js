@@ -1,4 +1,5 @@
-export default `
+export default function Carregando() {
+  document.body.innerHTML = `
   <section>
     <style>
       section {
@@ -65,4 +66,5 @@ export default `
         externos.</p>
       <button type="button" onclick="window.location.reload();">↻ Voltar ao site</button>
     </div>
-  </section>`
+  </section>`;
+}

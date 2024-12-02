@@ -15,9 +15,9 @@ export default class Dados extends EventTarget {
     !location.search || this.list.push(location.pathname + location.search);
   }
 
-  load(){
-    return new Promise((resolve)=>{
-      this.addEventListener("load", ()=>{
+  load() {
+    return new Promise((resolve) => {
+      this.addEventListener("load", () => {
         resolve("Ok");
       })
     });

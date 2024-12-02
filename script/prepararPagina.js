@@ -7,6 +7,7 @@ export default function prepararPagina() {
   adicionaFilhos(document.head, [
     NReact("meta", { name: "viewport", content: "width=device-width, initial-scale=1" }),
     NReact("link", { rel: "stylesheet", href: "https://valeriohasman.github.io/CriarWebAppPWA/style/parapagina.css" })
+    //NReact("link", { rel: "stylesheet", href: "http://localhost/CriarWebAppPWA/style/parapagina.css" })
   ])
 }
 

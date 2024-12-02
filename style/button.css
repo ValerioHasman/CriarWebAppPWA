@@ -1,0 +1,32 @@
+button {
+  padding: 0.5rem 2rem;
+  border-radius: 1rem;
+  border: 1px solid #eee;
+  transition: background-color 1s cubic-bezier(0, -1, 0, -1);
+  font-size: medium;
+}
+
+button:active {
+  background-color: rgb(158, 199, 200);
+  transition: none;
+}
+
+button.close {
+  font-size: revert;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: .4rem;
+  margin-right: .4rem;
+  padding: .8rem;
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/></svg>');
+  object-fit: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  aspect-ratio: 1/1;
+  width: auto;
+}
+
+.mt {
+  margin-top: 1rem;
+}

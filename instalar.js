@@ -1,16 +1,16 @@
+import Botao from "./componentes/Botao.js";
 import Dialog from "./componentes/Dialog.js";
 import Texto from "./componentes/Texto.js";
 import Titulo from "./componentes/Titulo.js";
-import NReact from "./NReact.js";
 import Carregando from "./script/Carregando.js";
 import Dados from "./script/Dados.js";
 import iframePara from "./script/iframePara.js";
 import Manifest from "./script/Manifest.js";
 import prepararPagina from "./script/prepararPagina.js";
 
-const dados = new Dados();
+Carregando();
 
-document.body.innerHTML = Carregando;
+const dados = new Dados();
 
 await dados.load();
 
@@ -24,13 +24,12 @@ document.body.append(iframe);
 iframe.addEventListener("load", enviarDadosParaIFrame);
 
 window.addEventListener("message", (event) => {
-  const erro = Dialog(
+  Dialog(
     {},
-    Titulo({}, "Pode ter ocorrido um erro."),
-    Texto({}, "Talvez não tenha sido possível instalar. Tente colocar um ícone PNG 1:1, ou trocar o modo de exibição, ou instalar manualmente."),
-    NReact("button", { onclick: function () { this.parentElement.close() } }, ["Cancelar"]),
-  )
-  erro.showModal();
+    Titulo({}, "Pode ter ocorrido um erro!"),
+    Texto({}, "Talvez não tenha sido possível instalar. Tente colocar um ícone PNG 1:1 de 512px², ou trocar o modo de exibição, ou instalar manualmente."),
+    Botao({ onclick: function () { this.parentElement.close() } }, "Cancelar")
+  );
   Manifest.instalar(event.data.manifest);
 })
 
@@ -44,8 +43,8 @@ window.addEventListener("beforeinstallprompt", (event) => {
     {},
     Titulo({}, "Pronto para instalar o site!"),
     Texto({}, "Instale e aproveite."),
-    NReact("button", { onclick: () => { event.prompt(); } }, ["Instalar"]),
-  ).showModal();
+    Botao({ onclick: () => { event.prompt(); } }, "Instalar")
+  );
 
   event.userChoice
     .then(choice => {
@@ -54,8 +53,8 @@ window.addEventListener("beforeinstallprompt", (event) => {
           {},
           Titulo({}, "Tudo pronto"),
           Texto({}, "Voltar para a o site?"),
-          NReact("button", { onclick: () => { window.location.reload(); } }, ["Voltar"]),
-        ).showModal();
+          Botao({ onclick: () => { window.location.reload(); } }, "Voltar")
+        );
       }
     })
 });
