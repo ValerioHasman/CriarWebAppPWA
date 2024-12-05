@@ -1,12 +1,13 @@
 dialog {
   border-radius: 1rem;
   border: none;
+  width: 100%;
   max-width: 90%;
   box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
   opacity: 0;
-  scale: 0.8;
-  transition: all 0.3s;
-  transition: all 0.3s allow-discrete;
+  scale: 0.9;
+  transition: all 0.25s;
+  transition: all 0.25s allow-discrete;
 }
 
 dialog[open] {
@@ -17,8 +18,8 @@ dialog[open] {
 dialog::backdrop {
   backdrop-filter: none;
   background: transparent;
-  transition: all 0.3s;
-  transition: all 0.3s allow-discrete ease-out;
+  transition: all 0.25s;
+  transition: all 0.25s allow-discrete ease-out;
 }
 
 dialog[open]::backdrop {
@@ -29,7 +30,7 @@ dialog[open]::backdrop {
 @starting-style {
   dialog[open] {
     opacity: 0;
-    scale: 0.8;
+    scale: 0.9;
   }
 
   dialog[open]::backdrop {
@@ -40,6 +41,12 @@ dialog[open]::backdrop {
 
 @media (min-width: 768px) {
   dialog {
-    max-width: 50%;
+    max-width: 60%;
+  }
+}
+
+@media (min-width: 1200px) {
+  dialog {
+    max-width: 40%;
   }
 }

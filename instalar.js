@@ -1,3 +1,4 @@
+import Ancora from "./componentes/Ancora.js";
 import Botao from "./componentes/Botao.js";
 import Dialog from "./componentes/Dialog.js";
 import Texto from "./componentes/Texto.js";
@@ -27,7 +28,11 @@ window.addEventListener("message", (event) => {
   Dialog(
     {},
     Titulo({}, "Pode ter ocorrido um erro!"),
-    Texto({}, "Talvez não tenha sido possível instalar. Tente colocar um ícone PNG 1:1 de 512px², ou trocar o modo de exibição, ou instalar manualmente."),
+    Texto({}, "Talvez não tenha sido possível instalar. Tente colocar um ícone PNG 1:1 de 512px², ou trocar o modo de exibição, ou instalar manualmente, ou usar a ",
+      Ancora({ href: "https://valeriohasman.github.io/CriarWebAppPWA/icon.png", target: "_blank", download: "" },
+        "Logo do App."
+      )
+    ),
     Botao({ onclick: function () { this.parentElement.close() } }, "Cancelar")
   );
   Manifest.instalar(event.data.manifest);

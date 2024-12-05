@@ -1,13 +1,14 @@
 button {
   padding: 0.5rem 2rem;
-  border-radius: 1rem;
+  border-radius: 5rem;
   border: 1px solid #eee;
+  background-color: rgba(0, 0, 0, 0.05);
   transition: background-color 1s cubic-bezier(0, -1, 0, -1);
   font-size: medium;
 }
 
 button:active {
-  background-color: rgb(158, 199, 200);
+  background-color: rgba(0, 0, 0, 0.12);
   transition: none;
 }
 
@@ -29,4 +30,6 @@ button.close {
 
 .mt {
   margin-top: 1rem;
+  margin-left: 0.5rem;
+  float: right;
 }
