@@ -3,13 +3,16 @@ import Botao from "./componentes/Botao.js";
 import Dialog from "./componentes/Dialog.js";
 import Texto from "./componentes/Texto.js";
 import Titulo from "./componentes/Titulo.js";
-import Carregando from "./script/Carregando.js";
+import Carregando from "./componentes/Carregando/index.js";
 import Dados from "./script/Dados.js";
 import iframePara from "./script/iframePara.js";
 import Manifest from "./script/Manifest.js";
-import prepararPagina from "./script/prepararPagina.js";
+import prepararPagina, { removeChildren } from "./script/prepararPagina.js";
+import { Urli } from "./NReact.js";
 
-Carregando();
+removeChildren(document.body);
+
+document.body.append(Carregando());
 
 const dados = new Dados();
 
@@ -17,8 +20,7 @@ await dados.load();
 
 prepararPagina();
 
-// const iframe = iframePara("http://localhost/CriarWebAppPWA/");
-const iframe = iframePara("https://valeriohasman.github.io/CriarWebAppPWA/");
+const iframe = iframePara(Urli("/"));
 
 document.body.append(iframe);
 

@@ -1,0 +1,53 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+section {
+  user-select: none;
+  margin-top: 10%;
+  margin-right: 10%;
+  margin-left: 10%;
+}
+
+h1 {
+  margin-top: 3em;
+  margin-bottom: 0.2rem;
+  animation: fim 0.1s 7.5s linear forwards;
+}
+
+[role=progressbar]>div {
+  background-color: currentColor;
+  height: 1px;
+  animation: progress 7s ease-out forwards;
+}
+
+.corsErr {
+  opacity: 0;
+  transform: translateY(25vh);
+  animation: cors 0.5s 8s ease-in-out forwards;
+}
+
+@keyframes progress {
+  from {
+    width: 0%;
+  }
+
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes cors {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fim {
+  to {
+    opacity: 0;
+  }
+}

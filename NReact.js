@@ -31,3 +31,10 @@ export function definePropriedades(props1 = {}, props2) {
   }
   return props1;
 }
+
+export function Urli(caminho = ""){
+  const arr = (import.meta.url).split( "/" );
+  arr.pop();
+  caminho = caminho[0] == "/" ? caminho : "/" + caminho;
+  return arr.join("/") + caminho;
+}
