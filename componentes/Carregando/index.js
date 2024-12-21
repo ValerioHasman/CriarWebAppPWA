@@ -1,7 +1,6 @@
 import NReact, { Urli } from "../../NReact.js";
 import Botao from "../Botao.js";
-import Texto from "../Texto.js";
-import Titulo from "../Titulo.js";
+import { Paragrafo, Titulo } from "../Texto.js";
 
 export default function Carregando() {
   const section = Section({},
@@ -11,7 +10,7 @@ export default function Carregando() {
       Div()
     ),
     Div({ className: "corsErr" },
-      Texto({}, "Hum… Pode ter ocorrido um problema de CORS, o site possivelmente não permite scripts externos."),
+      Paragrafo({}, "Hum… Pode ter ocorrido um problema de CORS, o site possivelmente não permite scripts externos."),
       Botao({ type: "button", onclick: () => { window.location.reload(); } },
         "↻ Voltar ao site"
       )
