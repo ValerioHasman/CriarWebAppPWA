@@ -86,7 +86,7 @@ form.onsubmit = (event) => {
   botao.disabled = true;
   setTimeout(() => {
     botao.disabled = false;
-  }, 5000);
+  }, 1000);
 
   origem.source.postMessage({ manifest: manifest.gerar() }, origem.origin);
 }

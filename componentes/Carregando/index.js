@@ -1,4 +1,4 @@
-import NReact, { importUrl } from "../../NReact.js";
+import NReact, { Urli } from "../../NReact.js";
 import Botao from "../Botao.js";
 import Texto from "../Texto.js";
 import Titulo from "../Titulo.js";

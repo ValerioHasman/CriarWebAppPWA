@@ -3,7 +3,7 @@ dialog {
   border: none;
   width: 100%;
   max-width: 90%;
-  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
   opacity: 0;
   scale: 0.9;
   transition: all 0.25s;
@@ -30,7 +30,7 @@ dialog[open]::backdrop {
 @starting-style {
   dialog[open] {
     opacity: 0;
-    scale: 0.9;
+    scale: 0.8;
   }
 
   dialog[open]::backdrop {
