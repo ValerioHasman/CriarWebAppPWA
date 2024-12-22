@@ -9,6 +9,8 @@ import Manifest from "./script/Manifest.js";
 import prepararPagina, { removeChildren } from "./script/prepararPagina.js";
 import { Urli } from "./NReact.js";
 
+const manifestd = document.querySelector("link[rel=manifest]");
+
 removeChildren(document.body);
 
 document.body.append(Carregando());
@@ -19,21 +21,19 @@ await dados.load();
 
 prepararPagina();
 
-//document.querySelector("link[rel=manifest]")?.remove();
-
 const iframe = iframePara(Urli("/"));
 
-const manifestd = document.querySelector("link[rel=manifest]");
-manifestd?.remove()
+if (manifestd) {
+  Dialog(
+    {},
+    Titulo({}, "Esse site já é istalável!"),
+    Paragrafo({}, "Deseja ", Frase({ style: { fontWeight: "bold" } }, "Continuar"), " a nova instalação?"),
+    Botao({ onclick: function () { window.location.reload(); } }, "Voltar"),
+    Botao({ onclick: function () { document.head.append(manifestd) } }, "Instalar"),
+    Botao({ onclick: function () { this.parentElement.close() } }, "Continuar")
+  );
+}
 
-Dialog(
-  {},
-  Titulo({}, "Esse site já é istalável!"),
-  Paragrafo({}, "Deseja ", Frase({ style: { fontWeight: "bold" } }, "Continuar"), " a nova instalação?"),
-  Botao({ onclick: function () { window.location.reload(); } }, "Voltar"),
-  Botao({ onclick: function () { document.head.append(manifestd) } }, "Instalar"),
-  Botao({ onclick: function () { this.parentElement.close() } }, "Continuar")
-);
 document.body.append(iframe);
 
 iframe.addEventListener("load", enviarDadosParaIFrame);
@@ -57,8 +57,6 @@ function enviarDadosParaIFrame() {
 }
 
 window.addEventListener("beforeinstallprompt", (event) => {
-  console.log(event)
-  console.log(event.constructor.name)
   event.preventDefault();
   Dialog(
     {},

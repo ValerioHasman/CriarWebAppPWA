@@ -17,5 +17,4 @@ export function removeChildren(element) {
   for (const els of arr) {
     els.remove();
   }
-  console.log(element)
 }
