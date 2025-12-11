@@ -88,69 +88,69 @@
 
   function aplicarNovoManifesto(url) {
     const linkManifest = document.querySelector("link[rel*=manifest]") ??
-    document.head.appendChild(
-      (function () {
-        const elm = document.createElement("link");
-        elm.rel = "manifest";
-        return elm;
-      })()
-    );
+      document.head.appendChild(
+        (function () {
+          const elm = document.createElement("link");
+          elm.rel = "manifest";
+          return elm;
+        })()
+      );
     linkManifest.href = url;
   }
   document.head.append(
-    _meta( {
+    _meta({
       name: "viewport", content: "width=device-width, initial-scale=1, interactive-widget=resizes-content, user-scalable=no"
     }),
-    _link( {
+    _link({
       href: "https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css", rel: "stylesheet"
     })
   );
   document.body.replaceChildren();
   document.body.append(
-    _div( {
+    _div({
       className: "d-flex vh-100 bg-body-tertiary overflow-y-auto"
     },
-      _div( {
+      _div({
         className: "col m-auto p-4 mw-100"
       },
-        _form( {
+        _form({
           className: "d-flex bg-body m-auto rounded-4 flex-wrap flex-column gap-4 p-4 shadow",
           onsubmit: gerarManifest,
           style: {
             maxWidth: "512px"
           }
         },
-          _label( {
+          _label({
             className: "col-auto"
           },
-            _div( {
+            _div({
               className: "form-label"
             },
               "Nome do app:"
             ),
-            _input( {
+            _input({
               className: "form-control", name: "name", required: true
             })
           ),
-          _label( {
+          _label({
             className: "col-auto mw-100"
           },
-            _div( {
+            _div({
               className: "form-label"
             },
               "Iniciar em:"
             ),
-            _div( {
+            _div({
               className: "input-group"
             },
-              _div( {
+              _div({
                 className: "input-group-text overflow-auto"
               },
                 location.host + "/"
               ),
-              _input( {
+              _input({
                 className:
-                "form-control",
+                  "form-control",
                 name: "start_url",
                 style: {
                   width: "fit-content"
@@ -159,36 +159,36 @@
               })
             ),
           ),
-          _label( {
+          _label({
             className: "col-auto"
           },
-            _div( {
+            _div({
               className: "form-label"
             },
-              "Cor do tema:"
+              "Tema:"
             ),
             execute(
-              _div( {
+              _div({
                 className: "input-group"
               }),
               (div) => {
-                const cor1 = _input( {
+                const cor1 = _input({
                   className: "form-control form-control-color p-1",
-                  name: "background_color",
+                  name: "theme_color",
                   type: "color",
                   value: "#ffffff",
-                  oninput: ()=> {
+                  oninput: () => {
                     cor2.value = cor1.value;
                   }
                 });
-                const cor2 = _input( {
+                const cor2 = _input({
                   className: "form-control font-monospace flex-grow-0",
                   style: {
                     width: "6rem"
                   },
                   maxLength: 7,
                   value: "#ffffff",
-                  oninput: ()=> {
+                  oninput: () => {
                     cor1.value = cor2.value;
                   }
                 });
@@ -199,18 +199,18 @@
               }
             )
           ),
-          _label( {
+          _label({
             className: "col-auto"
           },
-            _div( {
+            _div({
               className: "form-label"
             },
               "Instalar:"
             ),
-            _select( {
+            _select({
               className: "form-select", name: "display", required: true
             },
-              _option( {
+              _option({
                 value: "", hidden: true
               }),
               new Option("Tela cheia", "fullscreen"),
@@ -221,7 +221,7 @@
           ),
           listaDeIcones(),
 
-          _button( {
+          _button({
             className: "btn btn-primary", type: "submit",
             onclick: function () {
               this.form.dispatchEvent(new Event("change"))
@@ -243,23 +243,23 @@
   );
   function listaDeIcones() {
     return execute(
-      _div( {
+      _div({
         className: "table-responsive mw-100"
       },
-        _table( {
+        _table({
           className: "table table-bordered table-sm align-middle"
         },
-          _thead( {},
-            _tr( {},
-              _th( {}, "Ícones"),
-              _th( {}, "Tipo"),
-              _th( {}, "Dimensões"),
-              _th( {}, "Mascarável"),
-              _th( {}, ""),
+          _thead({},
+            _tr({},
+              _th({}, "Ícones"),
+              _th({}, "Tipo"),
+              _th({}, "Dimensões"),
+              _th({}, "Mascarável"),
+              _th({}, ""),
             )
           ),
           execute(
-            _tbody( {}),
+            _tbody({}),
             iconesPreExistentes,
           )
         )
@@ -272,13 +272,15 @@
     const form = ev.target;
     const name = form.querySelector('[name="name"]').value;
     const start_url = location.origin + "/" + form.querySelector('input[name="start_url"]').value;
-    const background_color = form.querySelector('[name="background_color"]').value;
+    const background_color = form.querySelector('[name="theme_color"]').value;
+    const theme_color = background_color
     const display = form.querySelector('[name="display"]').value;
     const linhas = Array.from(form.querySelectorAll("tbody tr"));
     const manifesto = {
       name,
       start_url,
       background_color,
+      theme_color,
       display,
       icons: [
         ...linhas.flatMap(linha => {
@@ -292,14 +294,14 @@
             type,
             purpose: "any",
           };
-          return !checkbox ? [any]:
-          [any,
-            {
-              src,
-              sizes,
-              type,
-              purpose: "maskable",
-            }]
+          return !checkbox ? [any] :
+            [any,
+              {
+                src,
+                sizes,
+                type,
+                purpose: "maskable",
+              }]
         })
       ]
     };
@@ -319,17 +321,17 @@
     const tbody = divTable.querySelector("tbody");
     divTable.insertAdjacentElement("afterbegin",
 
-      _input( {
+      _input({
         className: "form-control m-2", type: "file", accept: "image/*",
         onchange: function () {
           if (this.files[0])
             tbody.append(
-            linha(
-              URL.createObjectURL(
-                this.files[0]
+              linha(
+                URL.createObjectURL(
+                  this.files[0]
+                )
               )
-            )
-          );
+            );
           this.value = "";
         }
       })
@@ -349,31 +351,31 @@
       async (tr) => {
         const imagem = await obterInfoImagem(icone);
         tr.append(
-          _td( {},
-            _img( {
+          _td({},
+            _img({
               src: icone, style: {
                 width: "1.5rem", height: "1.5rem"
               }
             })
           ),
-          _td( {},
+          _td({},
             imagem.type),
-          _td( {},
+          _td({},
             imagem.width,
             "x",
             imagem.height),
-          _td( {},
-            _label( {
+          _td({},
+            _label({
               className: "form-check form-switch"
             },
-              _input( {
+              _input({
                 className: "form-check-input", type: "checkbox", role: "switch"
               })
 
             )
           ),
-          _td( {},
-            _button( {
+          _td({},
+            _button({
               className: "btn btn-danger", type: "button",
               onclick: function () {
                 this.closest("tr").remove();
@@ -389,7 +391,7 @@
     return {
       ...await new Promise((resolve) => {
         const img = new Image();
-        img.onload = () => resolve( {
+        img.onload = () => resolve({
           width: img.width,
           height: img.height
         });
