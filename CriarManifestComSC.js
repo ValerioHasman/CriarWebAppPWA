@@ -64,24 +64,6 @@
   function _option(props = {}, ...nodulo) {
     return NReact("option", props, nodulo);
   }
-  function _tr(props = {}, ...nodulo) {
-    return NReact("tr", props, nodulo);
-  }
-  function _td(props = {}, ...nodulo) {
-    return NReact("td", props, nodulo);
-  }
-  function _th(props = {}, ...nodulo) {
-    return NReact("th", props, nodulo);
-  }
-  function _table(props = {}, ...nodulo) {
-    return NReact("table", props, nodulo);
-  }
-  function _thead(props = {}, ...nodulo) {
-    return NReact("thead", props, nodulo);
-  }
-  function _tbody(props = {}, ...nodulo) {
-    return NReact("tbody", props, nodulo);
-  }
   function _img(props = {}, ...nodulo) {
     return NReact("img", props, nodulo);
   }
@@ -195,12 +177,13 @@
           listaDeIcones(),
           listaDeShortcuts(),
 
-          _button({
-            className: "btn btn-primary", type: "submit",
-            onclick: function () {
-              this.form.dispatchEvent(new Event("change"))
-            }
-          },
+          _button(
+            {
+              className: "btn btn-primary", type: "submit",
+              onclick: function () {
+                this.form.dispatchEvent(new Event("change"))
+              }
+            },
             "Instalar"
           )
 
@@ -217,70 +200,31 @@
   );
   function listaDeIcones() {
     return execute(
-      _div({
-        className: "table-responsive mw-100"
-      },
-        _table({
-          className: "table table-bordered table-sm align-middle"
-        },
-          _thead({},
-            _tr({},
-              _th({}, "Ícones"),
-              _th({}, "Tipo"),
-              _th({}, "Dimensões"),
-              _th({}, "Mascarável"),
-              _th({}, ""),
-            )
-          ),
-          execute(
-            _tbody({}),
-            iconesPreExistentes,
-          )
+      _div({ className: "d-flex flex-column gap-3" }),
+      iconesPreExistentes,
+      (divTable) => adicionarNovos(
+        divTable,
+        (dataImage) => divTable.append(
+          linha(dataImage)
         )
-      ),
-      adicionarNovos
-    );
+      )
+    )
   }
-  function shortcut() {
-    const src = _input({ hidden: true, name: "shortcut_src" });
-    const sizes = _input({ hidden: true, name: "shortcut_sizes" });
+  function shortcut(dataImage) {
+    console.log(dataImage)
     return _div(
-      { className: "shortcut row g-2" },
-      src,
-      sizes,
-      _div(
-        { className: "col" },
-        _input(
-          {
-            className: "form-control form-control-sm",
-            type: "file",
-            accept: "image/*",
-            required: true,
-            onchange: async function () {
-              if (this.files[0]) {
-                const url = URL.createObjectURL(
-                  this.files[0]
-                );
-                const imagem = await obterInfoImagem(
-                  url
-                );
-                src.value = url
-                sizes.value = `${imagem.width}x${imagem.height}`;
-                this.parentElement.classList.add("col-auto")
-                this.parentElement.classList.remove("col")
-                this.parentElement.replaceChildren(
-                  _img(
-                    {
-                      src: url,
-                      width: "30",
-                      height: "30",
-                    }
-                  )
-                );
-              }
-            }
-          }
-        )
+      { className: "sc row g-2" },
+      _img(
+        {
+          className: "col-auto",
+          src: dataImage.src,
+          dataset: {
+            ...dataImage,
+            size: `${dataImage.width}x${dataImage.height}`
+          },
+          width: 30,
+          height: 30
+        },
       ),
       _div(
         { className: "col" },
@@ -288,7 +232,7 @@
           {
             className: "form-control form-control-sm",
             placeholder: "Nome",
-            name: "shortcut_name",
+            name: "sc_name",
             required: true
           }
         )
@@ -300,7 +244,7 @@
             className: "form-control form-control-sm",
             placeholder: "Iniciar em",
             required: true,
-            name: "shortcut_url",
+            name: "sc_url",
           }
         )
       ),
@@ -311,7 +255,7 @@
             className: "btn btn-danger btn-sm",
             type: "button",
             onclick: ({ target }) => {
-              target.closest(".shortcut").remove();
+              target.closest(".sc").remove();
             }
           },
           "×"
@@ -323,27 +267,16 @@
 
     const container = _div({ className: "d-flex flex-column gap-2" });
 
-    return _div(
-      { className: "d-flex flex-column gap-2" },
-      "Lista De Shortcuts:",
+    adicionarNovos(
       container,
-      _div(
-        { className: "col-auto" },
-        _button(
-          {
-            className: "btn btn-secondary",
-            type: "button",
-
-            onclick: () => {
-              container.append(
-                shortcut()
-              )
-            }
-          },
-          "+"
-        )
-      )
+      (dataImage) => {
+        container.append(
+          shortcut(dataImage)
+        );
+      }
     );
+
+    return container;
   }
   function gerarManifest(ev) {
     ev.preventDefault();
@@ -353,8 +286,8 @@
     const background_color = form.querySelector('[name="theme_color"]').value;
     const theme_color = background_color
     const display = form.querySelector('[name="display"]').value;
-    const linhas = Array.from(form.querySelectorAll("tbody tr"));
-    const shortcuts = Array.from(form.querySelectorAll(".shortcut"));
+    const linhas = Array.from(form.querySelectorAll(".icone"));
+    const shortcuts = Array.from(form.querySelectorAll(".sc"));
     const manifesto = {
       name,
       start_url,
@@ -364,8 +297,8 @@
       icons: [
         ...linhas.flatMap(linha => {
           const src = linha.querySelector("img").src;
-          const sizes = linha.querySelector("td:nth-child(3)").innerText;
-          const type = linha.querySelector("td:nth-child(2)").innerText;
+          const sizes = linha.querySelector(".size").innerText;
+          const type = linha.querySelector(".type").innerText;
           const checkbox = linha.querySelector("input").checked;
           const any = {
             src,
@@ -374,29 +307,33 @@
             purpose: "any",
           };
           return !checkbox ? [any] :
-            [any,
+            [
+              any,
               {
                 src,
                 sizes,
                 type,
                 purpose: "maskable",
-              }]
+              }
+            ]
         })
       ],
       shortcuts: shortcuts.map(
-        sc => (
-          {
-            name: sc.querySelector('[name="shortcut_name"]').value,
-            description: sc.querySelector('[name="shortcut_name"]').value,
+        sc => {
+          const img = sc.querySelector('img');
+          return {
+            name: sc.querySelector('[name="sc_name"]').value,
+            description: sc.querySelector('[name="sc_name"]').value,
             icons: [
               {
-                src: sc.querySelector('[name="shortcut_src"]').value,
-                sizes: sc.querySelector('[name="shortcut_sizes"]').value
+                src: img.src,
+                sizes: img.dataset.size,
+                type: img.dataset.type
               }
             ],
-            url: location.origin + "/" + sc.querySelector('[name="shortcut_url"]').value
+            url: location.origin + "/" + sc.querySelector('[name="sc_url"]').value
           }
-        )
+        }
       )
     };
     aplicarNovoManifesto(
@@ -411,74 +348,60 @@
       )
     );
   }
-  function adicionarNovos(divTable) {
-    const tbody = divTable.querySelector("tbody");
-    divTable.insertAdjacentElement("afterbegin",
-
+  function adicionarNovos(divTable, callBack) {
+    divTable.append(
       _input({
         className: "form-control m-2", type: "file", accept: "image/*",
         onchange: function () {
           if (this.files[0])
-            tbody.append(
-              linha(
-                URL.createObjectURL(
-                  this.files[0]
-                )
+            obterInfoImagem(
+              URL.createObjectURL(
+                this.files[0]
               )
-            );
+            ).then(callBack);
           this.value = "";
         }
       })
-
     )
   }
   function iconesPreExistentes(tbody) {
     const hrefs = Array.from(document.querySelectorAll('link[rel*="icon"]')).map(l => l.href);
     tbody.append(
-      ...hrefs.map(href => linha(href,
-      ))
+      ...hrefs.map(href => linha(href))
     );
   }
-  function linha(icone) {
-    return execute(
-      _tr(),
-      async (tr) => {
-        const imagem = await obterInfoImagem(icone);
-        tr.append(
-          _td({},
-            _img({
-              src: icone, style: {
-                width: "1.5rem", height: "1.5rem"
-              }
-            })
-          ),
-          _td({},
-            imagem.type),
-          _td({},
-            imagem.width,
-            "x",
-            imagem.height),
-          _td({},
-            _label({
-              className: "form-check form-switch"
-            },
-              _input({
-                className: "form-check-input", type: "checkbox", role: "switch"
-              })
-
-            )
-          ),
-          _td({},
-            _button({
-              className: "btn btn-danger btn-sm", type: "button",
-              onclick: function () {
-                this.closest("tr").remove();
-              }
-            }, "×")
-          )
-        )
-      }
-    )
+  function linha(imagem) {
+    const div = _div({ className: "d-flex gap-3 icone" });
+    div.append(
+      _img({
+        src: imagem.src, style: {
+          width: "1.5rem", height: "1.5rem"
+        }
+      }),
+      _div(
+        { className: "type" },
+        imagem.type
+      ),
+      _div(
+        { className: "size" },
+        imagem.width,
+        "x",
+        imagem.height
+      ),
+      _input({
+        className: "form-check-input", type: "checkbox"
+      }),
+      _button(
+        {
+          className: "btn btn-danger btn-sm py-0", type: "button",
+          onclick: function () {
+            this.parentElement.remove();
+          }
+        },
+        "×"
+      )
+    );
+    return div;
   }
   async function obterInfoImagem(url) {
     const resp = await fetch(url);
@@ -491,6 +414,7 @@
         });
         img.src = url;
       }),
+      src: url,
       type: resp.headers.get("Content-Type") || ""
     };
   }
