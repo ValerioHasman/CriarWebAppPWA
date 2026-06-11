@@ -337,15 +337,7 @@
       )
     };
     aplicarNovoManifesto(
-      URL.createObjectURL(
-        new Blob([
-          JSON.stringify(
-            manifesto
-          )
-        ], {
-          type: "application/json"
-        })
-      )
+      `data:application/manifest+json,${encodeURIComponent(JSON.stringify(manifesto))}`
     );
   }
   function adicionarNovos(divTable, callBack) {
@@ -366,9 +358,14 @@
   }
   function iconesPreExistentes(tbody) {
     const hrefs = Array.from(document.querySelectorAll('link[rel*="icon"]')).map(l => l.href);
-    tbody.append(
-      ...hrefs.map(href => linha(href))
-    );
+    for (const h of hrefs) {
+      obterInfoImagem(h)
+        .then(di => {
+          tbody.append(
+            linha(di)
+          );
+        })
+    }
   }
   function linha(imagem) {
     const div = _div({ className: "d-flex gap-3 icone" });

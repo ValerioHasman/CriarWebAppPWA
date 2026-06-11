@@ -4,6 +4,9 @@
 
 Execute o script abaixo na barra de endereços do navegador ou crie um favorito com o seguinte comando:
 
+[Novo 2026](https://valeriohasman.github.io/CriarWebAppPWA/CriarManifestComSC.js)
+[Novo 2026](https://valeriohasman.github.io/CriarWebAppPWA/modelo.html)
+
 ### Novo 2025
 
 Completo e muito mais compatível, sem problema de cors
