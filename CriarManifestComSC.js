@@ -40,6 +40,9 @@
   function _div(props = {}, ...nodulo) {
     return NReact("div", props, nodulo);
   }
+  function divC() {
+    return _div({ className: "d-flex flex-column gap-2 bg-body-tertiary p-3 rounded-4 bg-opacity-50" });
+  }
   function _input(props = {}, ...nodulo) {
     return NReact("input", props, nodulo);
   }
@@ -141,12 +144,13 @@
               _option({
                 value: "", hidden: true
               }),
-              new Option("Tela cheia", "fullscreen"),
-              new Option("Como App", "standalone"),
-              new Option("Controles de navegação", "minimal-ui"),
-              new Option("Link de navegador", "browser"),
+              new Option("Em tela cheia (Jogos)", "fullscreen"),
+              new Option("Como um App", "standalone"),
+              new Option("Com controles de navegação", "minimal-ui"),
+              new Option("Como Link de navegador", "browser"),
             )
           ),
+
           listaDeIcones(),
           listaDeShortcuts(),
 
@@ -173,9 +177,10 @@
   );
   function listaDeIcones() {
     return execute(
-      _div({ className: "d-flex flex-column gap-3" }),
+      divC(),
       iconesPreExistentes,
       (divTable) => adicionarNovos(
+        "Ícones",
         divTable,
         (dataImage) => divTable.append(
           linha(dataImage)
@@ -214,7 +219,7 @@
         _input(
           {
             className: "form-control form-control-sm",
-            placeholder: "Iniciar em",
+            placeholder: "Inicia/em",
             required: true,
             name: "sc_url",
           }
@@ -225,9 +230,10 @@
   }
   function listaDeShortcuts() {
 
-    const container = _div({ className: "d-flex flex-column gap-2" });
+    const container = divC();
 
     adicionarNovos(
+      "Atalhos",
       container,
       (dataImage) => {
         container.append(
@@ -296,25 +302,27 @@
       `data:application/manifest+json,${encodeURIComponent(JSON.stringify(manifesto))}`
     );
   }
-  function adicionarNovos(divTable, callBack) {
+  function adicionarNovos(ttl, divTable, callBack) {
     divTable.append(
-      _input({
-        className: "form-control m-2", type: "file", accept: "image/*",
-        onchange: function () {
-          if (this.files[0])
-            obterInfoImagem(
-              URL.createObjectURL(
-                this.files[0]
-              )
-            ).then(callBack);
-          this.value = "";
-        }
-      })
+      label(
+        ttl,
+        _input({
+          className: "form-control form-control-sm", type: "file", accept: "image/*",
+          onchange: function () {
+            if (this.files[0])
+              obterInfoImagem(
+                URL.createObjectURL(
+                  this.files[0]
+                )
+              ).then(callBack);
+            this.value = "";
+          }
+        })
+      )
     )
   }
   function iconesPreExistentes(tbody) {
-    const hrefs = Array.from(document.querySelectorAll('link[rel*="icon"]')).map(l => l.href);
-    for (const h of hrefs) {
+    for (const h of Array.from(document.querySelectorAll('link[rel*="icon"]')).map(l => l.href)) {
       obterInfoImagem(h)
         .then(di => {
           tbody.append(
