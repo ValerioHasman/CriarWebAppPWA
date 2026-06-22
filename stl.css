@@ -1,0 +1,15 @@
+@import url(https://cdn.jsdelivr.net/npm/bootstrap@*/dist/css/bootstrap.css);
+
+form :invalid {
+  border-color: var(--bs-form-invalid-border-color);
+}
+
+form :invalid:focus {
+  border-color: var(--bs-form-invalid-border-color);
+  box-shadow: 0 0 0 0.25rem rgba(var(--bs-danger-rgb), 0.25);
+}
+
+label:has(input:required) :where(div, span):not(:has(>*))::after {
+  content: " *";
+  color: rgba(var(--bs-danger-rgb));
+}

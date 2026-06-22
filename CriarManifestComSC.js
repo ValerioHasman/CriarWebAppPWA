@@ -84,7 +84,7 @@
       name: "viewport", content: "width=device-width, initial-scale=1, interactive-widget=resizes-content, user-scalable=no"
     }),
     _link({
-      href: "https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css", rel: "stylesheet"
+      href: "https://valeriohasman.github.io/CriarWebAppPWA/stl.css", rel: "stylesheet"
     })
   );
   document.body.replaceChildren();
@@ -96,7 +96,7 @@
         className: "col m-auto p-4 mw-100"
       },
         _form({
-          className: "d-flex bg-body m-auto rounded-4 flex-wrap flex-column gap-4 p-4 shadow",
+          className: "d-flex bg-body m-auto rounded-4 flex-wrap flex-column gap-3 p-4 shadow",
           onsubmit: gerarManifest,
           style: {
             maxWidth: "512px"
