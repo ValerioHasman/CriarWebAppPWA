@@ -113,6 +113,9 @@
     }),
     _link({
       href: "https://valeriohasman.github.io/CriarWebAppPWA/stl.css", rel: "stylesheet"
+    }),
+    _link({
+      href: "/stl.css", rel: "stylesheet"
     })
   );
   document.body.replaceChildren();
@@ -190,42 +193,46 @@
   }
   function shortcut(dataImage) {
     return _div(
-      { className: "sc rm row g-2" },
-      _img(
-        {
-          className: "col-auto",
-          src: dataImage.src,
-          dataset: {
-            ...dataImage,
-            size: `${dataImage.width}x${dataImage.height}`
+      { className: "sc rm d-flex gap-1 border-bottom pb-1" },
+      _div(
+        { className: "col" },
+        _img(
+          {
+            className: "mw-100",
+            src: dataImage.src,
+            dataset: {
+              ...dataImage,
+              size: `${dataImage.width}x${dataImage.height}`
+            },
           },
-          width: 30,
-          height: 30
-        },
+        ),
       ),
       _div(
-        { className: "col" },
-        _input(
-          {
-            className: "form-control form-control-sm",
-            placeholder: "Nome",
-            name: "sc_name",
-            required: true
-          }
+        { className: "col-10 d-flex flex-wrap gap-1" },
+        _div(
+          { className: "col" },
+          _input(
+            {
+              className: "form-control form-control-sm",
+              placeholder: "Nome",
+              name: "sc_name",
+              required: true
+            }
+          ),
+        ),
+        _div({ className: "col-auto" }, buttonRM()),
+        _div(
+          { className: "col-12" },
+          _input(
+            {
+              className: "form-control form-control-sm",
+              placeholder: "Inicia/em",
+              required: true,
+              name: "sc_url",
+            }
+          )
         )
       ),
-      _div(
-        { className: "col" },
-        _input(
-          {
-            className: "form-control form-control-sm",
-            placeholder: "Inicia/em",
-            required: true,
-            name: "sc_url",
-          }
-        )
-      ),
-      _div({ className: "col-auto" }, buttonRM())
     )
   }
   function listaDeShortcuts() {
@@ -332,7 +339,7 @@
     }
   }
   function linha(imagem) {
-    const div = _div({ className: "d-flex gap-3 icone rm align-items-center" });
+    const div = _div({ className: "d-flex gap-3 icone rm align-items-center flex-wrap border-bottom pb-1" });
     div.append(
       _img({
         src: imagem.src, style: {
