@@ -1,5 +1,10 @@
 @import url(https://cdn.jsdelivr.net/npm/bootstrap@*/dist/css/bootstrap.css);
 
+:root {
+  --bs-border-radius: 0.5rem;
+  --bs-border-radius-sm: 0.5rem;
+}
+
 form :invalid {
   border-color: var(--bs-form-invalid-border-color);
 }
@@ -9,7 +14,7 @@ form :invalid:focus {
   box-shadow: 0 0 0 0.25rem rgba(var(--bs-danger-rgb), 0.25);
 }
 
-label:has(input:required) :where(div, span):not(:has(>*))::after {
+label:has(:where(input, select):required) :where(div, span):not(:has(>*))::after {
   content: " *";
   color: rgba(var(--bs-danger-rgb));
 }

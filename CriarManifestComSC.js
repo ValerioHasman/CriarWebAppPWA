@@ -49,6 +49,16 @@
   function _button(props = {}, ...nodulo) {
     return NReact("button", props, nodulo);
   }
+  function buttonRM(...f) {
+    return _button(
+      {
+        className: "btn btn-danger btn-sm",
+        type: "button",
+        onclick: (ev) => ev.target.closest(".rm").remove()
+      },
+      "×"
+    );
+  }
   function _form(props = {}, ...nodulo) {
     return NReact("form", props, nodulo);
   }
@@ -61,6 +71,21 @@
   function _label(props = {}, ...nodulo) {
     return NReact("label", props, nodulo);
   }
+
+  function label(ttl, ...f) {
+    return _label(
+      {
+        className: "col-auto"
+      },
+      _div({
+        className: "form-label"
+      },
+        ttl
+      ),
+      ...f
+    )
+  }
+
   function _option(props = {}, ...nodulo) {
     return NReact("option", props, nodulo);
   }
@@ -102,66 +127,14 @@
             maxWidth: "512px"
           }
         },
-          _label({
-            className: "col-auto"
-          },
-            _div({
-              className: "form-label"
-            },
-              "Nome do app:"
-            ),
+          label(
+            "Nome do app:",
             _input({
               className: "form-control", name: "name", required: true
             })
           ),
-          _label({
-            className: "col-auto"
-          },
-            _div({
-              className: "form-label"
-            },
-              "Tema:"
-            ),
-            execute(
-              _div({
-                className: "input-group"
-              }),
-              (div) => {
-                const cor1 = _input({
-                  className: "form-control form-control-color p-1",
-                  name: "theme_color",
-                  type: "color",
-                  value: "#ffffff",
-                  oninput: () => {
-                    cor2.value = cor1.value;
-                  }
-                });
-                const cor2 = _input({
-                  className: "form-control font-monospace flex-grow-0",
-                  style: {
-                    width: "6rem"
-                  },
-                  maxLength: 7,
-                  value: "#ffffff",
-                  oninput: () => {
-                    cor1.value = cor2.value;
-                  }
-                });
-                div.append(
-                  cor1,
-                  cor2
-                );
-              }
-            )
-          ),
-          _label({
-            className: "col-auto"
-          },
-            _div({
-              className: "form-label"
-            },
-              "Instalar:"
-            ),
+          label(
+            "Instalar:",
             _select({
               className: "form-select", name: "display", required: true
             },
@@ -211,9 +184,8 @@
     )
   }
   function shortcut(dataImage) {
-    console.log(dataImage)
     return _div(
-      { className: "sc row g-2" },
+      { className: "sc rm row g-2" },
       _img(
         {
           className: "col-auto",
@@ -248,19 +220,7 @@
           }
         )
       ),
-      _div(
-        { className: "col-auto" },
-        _button(
-          {
-            className: "btn btn-danger btn-sm",
-            type: "button",
-            onclick: ({ target }) => {
-              target.closest(".sc").remove();
-            }
-          },
-          "×"
-        )
-      )
+      _div({ className: "col-auto" }, buttonRM())
     )
   }
   function listaDeShortcuts() {
@@ -283,16 +243,12 @@
     const form = ev.target;
     const name = form.querySelector('[name="name"]').value;
     const start_url = location.origin + "/";
-    const background_color = form.querySelector('[name="theme_color"]').value;
-    const theme_color = background_color
     const display = form.querySelector('[name="display"]').value;
     const linhas = Array.from(form.querySelectorAll(".icone"));
     const shortcuts = Array.from(form.querySelectorAll(".sc"));
     const manifesto = {
       name,
       start_url,
-      background_color,
-      theme_color,
       display,
       icons: [
         ...linhas.flatMap(linha => {
@@ -368,7 +324,7 @@
     }
   }
   function linha(imagem) {
-    const div = _div({ className: "d-flex gap-3 icone" });
+    const div = _div({ className: "d-flex gap-3 icone rm align-items-center" });
     div.append(
       _img({
         src: imagem.src, style: {
@@ -388,15 +344,7 @@
       _input({
         className: "form-check-input", type: "checkbox"
       }),
-      _button(
-        {
-          className: "btn btn-danger btn-sm py-0", type: "button",
-          onclick: function () {
-            this.parentElement.remove();
-          }
-        },
-        "×"
-      )
+      buttonRM()
     );
     return div;
   }
